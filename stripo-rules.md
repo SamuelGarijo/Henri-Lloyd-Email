@@ -199,3 +199,78 @@ Line-height must always be expressed in **absolute px**, calculated as font-size
 - Generate block-specific `es-text-{id}` mobile override classes — these are Stripo-assigned
 - Write `!important` outside of `@media` mobile typography override blocks
 - Overwrite any file inside `Stripo-code-examples/` — that folder is reference only
+- Write a `.es-content-body p` mobile `@media` override without immediately following it with the footer and infoblock cascade protection guards — see §9
+
+---
+
+## 9. The Mobile Cascade Protection Rule — MANDATORY
+
+This rule is **non-negotiable**. Whenever a `@media (max-width:600px)` block resizes body copy via `.es-content-body p` or `.es-content-body a`, the AI **must** immediately follow with footer and infoblock protection rules **in this exact source order** within the same `@media` block. Omitting or reordering these rules produces a silent cascade failure.
+
+### Why omission is a silent failure
+
+`.es-footer-body` and `.es-infoblock` are nested inside `.es-content-body` in the DOM. All three rules share equal CSS specificity (0,1,1) and all carry `!important`. When specificity and importance are tied, **the last rule in source order wins**. The Custom CSS panel loads after Default CSS, so the `16px !important` body rule silently overwrites the `14px` footer and `12px` infoblock values that Default CSS set — with no error, no warning, and no visual flag in Stripo's UI.
+
+### Required block — canonical pattern with placeholders
+
+```css
+@media only screen and (max-width: 600px) {
+
+  /* 1. Body override — triggers the cascade problem */
+  .es-content-body p,
+  .es-content-body a {
+    font-size: [Mobile_Body_Size] !important;
+    line-height: [Mobile_Body_LH] !important;
+  }
+
+  /* 2. Footer protection — wins over body rule by source order */
+  .es-footer-body p,
+  .es-footer-body a {
+    font-size: [Desktop_Footer_Size] !important;
+    line-height: [Desktop_Footer_LH] !important;
+  }
+
+  /* 3. Infoblock protection — written last; wins over both rules above */
+  .es-infoblock p,
+  .es-infoblock a {
+    font-size: [Desktop_Infoblock_Size] !important;
+    line-height: [Desktop_Infoblock_LH] !important;
+  }
+
+}
+```
+
+### Resolved values for the Henri Lloyd token set
+
+| Placeholder | Token | Resolved value |
+|---|---|---|
+| `[Mobile_Body_Size]` | `type.body` (Mobile) | `16px` |
+| `[Mobile_Body_LH]` | `type.body.line-height` (Mobile) | `24px` |
+| `[Desktop_Footer_Size]` | `type.Footer` (Desktop = Mobile) | `14px` |
+| `[Desktop_Footer_LH]` | `type.Footer.line-height` | `19.6px` |
+| `[Desktop_Infoblock_Size]` | `type.Info-area` (Desktop = Mobile) | `12px` |
+| `[Desktop_Infoblock_LH]` | `type.Info-area.line-height` | `16.8px` |
+
+> **Note:** `type.Footer` and `type.Info-area` are identical on desktop and mobile (no token delta). The guard values are **not** mobile size changes — they are re-assertions of the correct Default CSS values inside Custom CSS `@media` to counteract source-order bleed from the body reduction. They are shield rules, not override rules.
+
+### Three non-negotiable requirements
+
+1. **Source order is fixed.** Rules 1 → 2 → 3 must appear in this exact top-to-bottom sequence. Do not reorder.
+2. **All three rules are always written together.** Writing rule 1 without rules 2 and 3 is a pipeline error.
+3. **Placement is immediate.** Rules 2 and 3 must follow rule 1 without any other rules between them.
+
+### HTML precondition
+
+`<p>` tags inside `es-infoblock` and `es-footer-body` TDs must carry **no** `es-text-mobile-size-{XX}` or `es-override-size` class. If these classes are present on a zone `<p>`, Stripo enrolls the block in the heading-style responsive system and injects competing overrides that break the cascade protection. Font size for these zones is resolved entirely by the parent TD class — the `<p>` must be clean.
+
+```html
+<!-- FORBIDDEN inside es-infoblock or es-footer-body -->
+<td class="esd-block-text es-infoblock">
+  <p class="es-text-mobile-size-16 es-override-size">Copy here.</p>
+</td>
+
+<!-- CORRECT — clean <p>; font-size resolved by parent TD class -->
+<td class="esd-block-text es-infoblock">
+  <p>Copy here.</p>
+</td>
+```

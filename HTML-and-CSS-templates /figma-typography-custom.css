@@ -46,52 +46,62 @@
    ───────────────────────────────────────────────────────────── */
 
 /* h1 — Regular 400 | 48px / 48px lh | letter-spacing 0
-   token: type.headings.h1 | line-height alias resolves to font-size */
+   token: type.headings.h1 | line-height alias resolves to font-size
+   margin-bottom: spacing.text.h1-pad-bottom = 24px */
 h1 {
   font-size: 48px;
   line-height: 48px;
   font-weight: 400;
   letter-spacing: 0;
+  margin-bottom: 24px;
 }
 
 /* h2 — Semibold 600 | 32px / 32px lh | letter-spacing 0
-   token: type.headings.h2 */
+   token: type.headings.h2
+   margin-bottom: spacing.text.h2-pad-bottom = 20px */
 h2 {
   font-size: 32px;
   line-height: 32px;
   font-weight: 600;
   letter-spacing: 0;
   text-align: inherit;
+  margin-bottom: 20px;
 }
 
 /* h3 — Semibold 600 | 24px / 24px lh | letter-spacing 0
-   token: type.headings.h3 */
+   token: type.headings.h3
+   margin-bottom: spacing.text.h3-pad-bottom = 16px */
 h3 {
   font-size: 24px;
   line-height: 24px;
   font-weight: 600;
   letter-spacing: 0;
   text-align: inherit;
+  margin-bottom: 16px;
 }
 
 /* h4 — Semibold 600 | 20px / 20px lh | letter-spacing 0
-   token: type.headings.h4 */
+   token: type.headings.h4
+   margin-bottom: spacing.text.h4-pad-bottom = 12px */
 h4 {
   font-size: 20px;
   line-height: 20px;
   font-weight: 600;
   letter-spacing: 0;
   text-align: inherit;
+  margin-bottom: 12px;
 }
 
 /* h5 — Bold 700 | 15px / 18px lh | letter-spacing 0
-   token: type.headings.h5 | line-height is explicit (not an alias) */
+   token: type.headings.h5 | line-height is explicit (not an alias)
+   margin-bottom: spacing.text.h5-pad-bottom = 10px */
 h5 {
   font-size: 15px;
   line-height: 18px;
   font-weight: 700;
   letter-spacing: 0;
   text-align: inherit;
+  margin-bottom: 10px;
 }
 
 /* h6 — Regular 400 | 12px / 12px lh | PT Mono
@@ -121,6 +131,18 @@ h6 {
    ───────────────────────────────────────────────────────────── */
 
 @media only screen and (max-width: 600px) {
+
+  /* ── Heading margin-bottom — Mobile overrides
+     Source: Spacing Tokens - New / Mobile.json → spacing.text.*-pad-bottom
+     Applies globally (no block ID needed — h1–h5 selectors only) ── */
+
+  h1 { margin-bottom: 20px !important; }
+  h2 { margin-bottom: 16px !important; }
+  h3 { margin-bottom: 12px !important; }
+  h4 { margin-bottom: 10px !important; }
+  h5 { margin-bottom: 8px !important; }
+
+  /* ── Heading font-size / line-height block overrides ── */
 
   /* h1: 48px → 36px | line-height 36px (alias resolves to font-size)
      token: type.headings.h1 (Mobile) | block ID: es-text-1766 */

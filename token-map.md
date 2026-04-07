@@ -815,3 +815,56 @@ Before finalising any HTML or CSS output, verify:
 - [ ] `type.button` produces no `@media` rule (desktop = mobile, applied inline)
 - [ ] The `@media` block contains the three paragraph rules in this exact order: `.es-content-body p` → `.es-footer-body p` → `.es-infoblock p` (source order is the cascade mechanism — reordering breaks protection)
 - [ ] No token-vs-HTML size mismatch remains in the output — mismatches are resolved by updating the HTML class, not by leaving them flagged
+
+---
+
+### 10.9 — The Mobile Cascade Protection Rule (canonical reference)
+
+> **Full specification:** `stripo-rules.md §9`. This section is the token-map summary. Always read §9 of stripo-rules.md for the authoritative rule before generating any `@media` block that touches body copy.
+
+**Trigger condition:** Anytime `.es-content-body p` or `.es-content-body a` is resized inside a `@media` block, the AI **must** write all three of the following rules, in this exact order, immediately after the body rule:
+
+```css
+@media only screen and (max-width: 600px) {
+
+  /* 1. Body override */
+  .es-content-body p,
+  .es-content-body a {
+    font-size: [Mobile_Body_Size] !important;
+    line-height: [Mobile_Body_LH] !important;
+  }
+
+  /* 2. Footer protection — must follow rule 1 directly */
+  .es-footer-body p,
+  .es-footer-body a {
+    font-size: [Desktop_Footer_Size] !important;
+    line-height: [Desktop_Footer_LH] !important;
+  }
+
+  /* 3. Infoblock protection — must be last; wins by source order */
+  .es-infoblock p,
+  .es-infoblock a {
+    font-size: [Desktop_Infoblock_Size] !important;
+    line-height: [Desktop_Infoblock_LH] !important;
+  }
+
+}
+```
+
+**Resolved values (Henri Lloyd token set):**
+
+| Placeholder | Token | Value |
+|---|---|---|
+| `[Mobile_Body_Size]` | `type.body` Mobile | `16px` |
+| `[Mobile_Body_LH]` | `type.body.line-height` Mobile | `24px` |
+| `[Desktop_Footer_Size]` | `type.Footer` | `14px` |
+| `[Desktop_Footer_LH]` | `type.Footer.line-height` | `19.6px` |
+| `[Desktop_Infoblock_Size]` | `type.Info-area` | `12px` |
+| `[Desktop_Infoblock_LH]` | `type.Info-area.line-height` | `16.8px` |
+
+**Root cause in one sentence:** `.es-footer-body` and `.es-infoblock` are DOM children of `.es-content-body`; all three rules share equal specificity (0,1,1) + `!important`; source order decides — body rule (written first) bleeds into footer and infoblock unless guards follow immediately after it.
+
+**Three non-negotiable requirements:**
+1. Source order is fixed: rule 1 → rule 2 → rule 3. Do not reorder.
+2. All three rules are written together. Rule 1 alone is a pipeline error.
+3. `<p>` tags inside `es-infoblock` and `es-footer-body` TDs must carry no `es-text-mobile-size-{XX}` or `es-override-size` class — zone size is resolved by the parent TD class, not the `<p>` itself.

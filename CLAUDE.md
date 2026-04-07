@@ -12,7 +12,7 @@ This repository contains Figma design tokens (exported as JSON) and Stripo email
 ## Files you must read before any generation task
 0. On each conversation session, read the stripo-rules.md files in the Beginning to have a good knowledge about Stripo code syntax. (this is mandatory on each session)
 1. token-map.md
-2. Whatever original token collection you may need for build specific CSS or HTML structure from here: /Users/samuelgarijocortes/Desktop/Henri Lloyd - Email Design System/Figma-local-variables
+2. pipeline-optimization.md when using the pipeline from figma to stripo code.
 
 ## Files you can read when needed
 - If you have doubts regarding token mapping from Figma sources or the token variables collection (in json) to the Stripo HTML or CSS, please read "Figma to HTML Email CSS Properties-Spacing Translation and Stripo Implementation.md"
