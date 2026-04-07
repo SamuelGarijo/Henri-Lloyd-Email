@@ -1,0 +1,89 @@
+/* IMPORTANT THIS STYLES MUST BE ON FINAL EMAIL */
+h2,h3,h4,h5,h6 {
+    letter-spacing: -0.5px;
+  }
+  .es-button img {
+    padding-bottom: 2px;
+  }
+  h2,h3,h4,h5,h6 {
+    letter-spacing: -0.5px;
+    text-align: inherit;
+  }
+  .es-button-border a {
+    text-transform: uppercase;
+  }
+  .esd-module-6611 .es-button img {
+    padding-bottom: 2px;
+  }
+  .esd-module-6611 h2, .esd-module-6611 h3, .esd-module-6611 h4, .esd-module-6611 h5, .esd-module-6611 h6 {
+    letter-spacing: -0.5px;
+    text-align: inherit;
+  }
+  .esd-module-6611 .es-button-border a {
+    text-transform: uppercase;
+  }
+  /* END OF IMPORTANT */
+  @media only screen and (max-width: 600px) {
+    .es-module-5980 p, .es-module-5980 a {
+      line-height: 140% !important;
+    }
+    .es-module-5980 .es-c p {
+    }
+    .es-module-5980 .es-c p, .es-module-5980 .es-c a {
+      font-size: 20px !important;
+    }
+    .es-module-5980 .esd-stripe .mobile-footer-border {
+      border-right: 0px !important;
+    }
+    .es-module-5980 .mobile-footer-border {
+      border-right: 0px !important;
+    }
+    .es-module-5980 .es-text-mobile-size-14.es-override-size *, .es-module-5980 .es-text-mobile-size-14.es-override-size a {
+      font-size: 14px !important;
+    }
+    a.es-button.es-button-9856 {
+      padding: 0 !important;
+    }
+    a.es-button.es-button-5051 {
+      padding: 0 !important;
+    }
+    a.es-button.es-button-1467 {
+      padding: 0 !important;
+    }
+    .esd-module-6611 a.es-button.es-button-3394 {
+      padding: 0 !important;
+      text-align: left !important;
+    }
+    .esd-module-6611 .es-m-w0 {
+      width: 0px !important;
+    }
+    .esd-module-6611 .es-text-7100 .es-text-mobile-size-16.es-override-size, .esd-module-6611 .es-text-7100 .es-text-mobile-size-16.es-override-size * {
+      font-size: 16px !important;
+    }
+    .esd-module-6611 td.es-spacer-1139 {
+      height: 100px !important;
+    }
+    .esd-module-6611 td.es-spacer-1318 {
+      height: 185px !important;
+    }
+    .es-text-6871 .es-text-mobile-size-16,
+    .es-text-6871 .es-text-mobile-size-16 * {
+      font-size: 16px !important;
+    }
+    .es-text-4373 .es-text-mobile-size-16,
+    .es-text-4373 .es-text-mobile-size-16 * {
+      font-size: 16px !important;
+    }
+    .es-text-9266 .es-text-mobile-size-16,
+    .es-text-9266 .es-text-mobile-size-16 * {
+      font-size: 16px !important;
+    }
+    .es-text-6798 .es-text-mobile-size-16,
+    .es-text-6798 .es-text-mobile-size-16 * {
+      font-size: 16px !important;
+    }
+    .es-text-mobile-size-14.es-override-size * , .es-text-mobile-size-14.es-override-size a {
+      font-size: 14px !important;
+    }
+  }
+  
