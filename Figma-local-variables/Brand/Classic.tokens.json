@@ -1,0 +1,87 @@
+{
+  "Font Family": {
+    "headlines": {
+      "$type": "string",
+      "$value": "PS Times",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2008:1090",
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "body copy": {
+      "$type": "string",
+      "$value": "DM Sans",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2008:1091",
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "Product names": {
+      "$type": "string",
+      "$value": "DM Sans",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2064:106",
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Font Weight": {
+    "headlines": {
+      "$type": "string",
+      "$value": "Regular",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2057:93",
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "body copy": {
+      "$type": "string",
+      "$value": "Regular",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2057:94",
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "Product names": {
+      "$type": "string",
+      "$value": "Regular",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2064:107",
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "letter spacing": {
+    "headlines": {
+      "$type": "number",
+      "$value": 0,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2062:103",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "body copy": {
+      "$type": "number",
+      "$value": 0,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:2064:104",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "$extensions": {
+    "com.figma.modeName": "Classic"
+  }
+}
