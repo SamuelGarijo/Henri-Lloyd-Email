@@ -1,0 +1,70 @@
+{
+  "Font Family": {
+    "headlines": {
+      "value": "DM Sans",
+      "type": "text",
+      "$extensions": {
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "body copy": {
+      "value": "DM Sans",
+      "type": "text",
+      "$extensions": {
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "Product names": {
+      "value": "PT Mono",
+      "type": "text",
+      "$extensions": {
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "Font Weight": {
+    "headlines": {
+      "value": "Semibold",
+      "type": "text",
+      "$extensions": {
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "body copy": {
+      "value": "Regular",
+      "type": "text",
+      "$extensions": {
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "Product names": {
+      "value": "Regular",
+      "type": "text",
+      "$extensions": {
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  },
+  "letter spacing": {
+    "headlines": {
+      "value": "0px",
+      "type": "dimension",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    },
+    "body copy": {
+      "value": "0px",
+      "type": "dimension",
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.hiddenFromPublishing": false
+      }
+    }
+  }
+}
