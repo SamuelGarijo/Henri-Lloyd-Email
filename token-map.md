@@ -275,7 +275,23 @@ The AI **must** use this exact template structure for every heading element that
     line-height: 24px !important;
   }
 
-  /* type.Footer, type.Info-area, type.button — NO override. Desktop = Mobile. */
+  /* CASCADE PROTECTION — must be written AFTER the content-body rule above.
+     type.Footer (14px) and type.Info-area (12px) are desktop = mobile, so no
+     token-driven size change is needed. However, .es-content-body p above would
+     bleed 16px into footer and infoblock zones without these guards.
+     Both rules have equal specificity + !important — source order decides.
+     type.button produces no @media output (desktop = mobile, applied inline). */
+  .es-footer-body p,
+  .es-footer-body a {
+    font-size: 14px !important;
+    line-height: 19.6px !important;
+  }
+
+  .es-infoblock p,
+  .es-infoblock a {
+    font-size: 12px !important;
+    line-height: 16.8px !important;
+  }
 
 }
 ```
@@ -311,46 +327,46 @@ Active mode: **Desktop**
 
 ### 5.3 Structure padding — `esd-structure` level
 
-Applies as inline style on `<td class="esd-structure">`.
+Applied by syncing `es-p{XX}{side}` classes on `<td class="esd-structure">`. Stripo's JIT compiler generates the CSS at export/preview time. **Never use inline `style="padding:..."` on this element** — it locks the UI padding controls and bypasses the JIT pipeline (see stripo-rules.md §3).
 
-| Token path | Alias | Resolved value | Property |
-|---|---|---|---|
-| `spacing.structure.pad-top` | — | `0px` | `padding-top` |
-| `spacing.structure.pad-right` | `spacing.L` | `30px` | `padding-right` |
-| `spacing.structure.pad-bottom` | `spacing.XL` | `40px` | `padding-bottom` |
-| `spacing.structure.pad-left` | `spacing.L` | `30px` | `padding-left` |
+| Token path | Alias | Resolved value | Side | Class to set |
+|---|---|---|---|---|
+| `spacing.structure.pad-top` | — | `0px` | `t` | *(absent — zero is default, no class needed)* |
+| `spacing.structure.pad-right` | `spacing.L` | `30px` | `r` | `es-p30r` |
+| `spacing.structure.pad-bottom` | `spacing.XL` | `40px` | `b` | `es-p40b` |
+| `spacing.structure.pad-left` | `spacing.L` | `30px` | `l` | `es-p30l` |
 
-Inline shorthand: `style="padding:0 30px 40px 30px"`
+Result: `<td class="esd-structure es-p30r es-p40b es-p30l">`
 
 ### 5.4 Container padding — `esd-container-frame` level
 
-Applies as inline style on `<td class="esd-container-frame">`.
+Applied by syncing `es-p{XX}{side}` classes on `<td class="esd-container-frame">`. **Never use inline `style="padding:..."` on this element.**
 
-| Token path | Alias | Resolved value | Property |
-|---|---|---|---|
-| `spacing.container.pad-top` | `spacing.Null` | `0px` | `padding-top` |
-| `spacing.container.pad-right` | `spacing.L` | `30px` | `padding-right` |
-| `spacing.container.pad-bottom` | `spacing.XS` | `10px` | `padding-bottom` |
-| `spacing.container.pad-left` | `spacing.L` | `30px` | `padding-left` |
+| Token path | Alias | Resolved value | Side | Class to set |
+|---|---|---|---|---|
+| `spacing.container.pad-top` | `spacing.Null` | `0px` | `t` | *(absent — zero is default, no class needed)* |
+| `spacing.container.pad-right` | `spacing.L` | `30px` | `r` | `es-p30r` |
+| `spacing.container.pad-bottom` | `spacing.XS` | `10px` | `b` | `es-p10b` |
+| `spacing.container.pad-left` | `spacing.L` | `30px` | `l` | `es-p30l` |
 
-Inline shorthand: `style="padding:0 30px 10px 30px"`
+Result: `<td class="esd-container-frame es-p30r es-p10b es-p30l">`
 
 ### 5.5 Block (element) padding — `esd-block-*` level
 
-Applies as inline style on `<td class="esd-block-text">`, `<td class="esd-block-image">`, etc.
+Applied by syncing `es-p{XX}{side}` classes on `<td class="esd-block-text">`, `<td class="esd-block-image">`, etc. **Never use inline `style="padding:..."` on these elements.**
 
-| Token path | Alias | Resolved value | Property |
-|---|---|---|---|
-| `spacing.element.pad-top` | — | `0px` | `padding-top` |
-| `spacing.element.pad-right` | — | `0px` | `padding-right` |
-| `spacing.element.pad-bottom` | `spacing.S` | `15px` | `padding-bottom` |
-| `spacing.element.pad-left` | — | `0px` | `padding-left` |
+| Token path | Alias | Resolved value | Side | Class to set |
+|---|---|---|---|---|
+| `spacing.element.pad-top` | — | `0px` | `t` | *(absent — zero is default, no class needed)* |
+| `spacing.element.pad-right` | — | `0px` | `r` | *(absent — zero is default, no class needed)* |
+| `spacing.element.pad-bottom` | `spacing.S` | `15px` | `b` | `es-p15b` |
+| `spacing.element.pad-left` | — | `0px` | `l` | *(absent — zero is default, no class needed)* |
 
-Inline shorthand: `style="padding:0 0 15px 0"`
+Result: `<td class="esd-block-text es-p15b">`
 
 ### 5.6 Button spacing
 
-Applies inline on `<a class="es-button">` and `<span class="es-button-border">`.
+Button padding is the **sole exception** to the class-sync rule. It is applied as an inline style on `<a class="es-button">` — buttons do not use the `es-p{XX}{side}` JIT system. The `<span class="es-button-border">` carries only `border-radius` and `background` as inline styles.
 
 | Token path | Alias | Resolved value | Property | Applied on |
 |---|---|---|---|---|
@@ -392,7 +408,7 @@ Spacer blocks are reserved as developer wildcards for custom spacing — not use
 
 Source: `Figma-local-variables/Spacing Tokens - New/Mobile.tokens.json`
 Active mode: **Mobile**
-Layer: **Custom CSS** inside `@media only screen and (max-width:600px)` with `!important`.
+Layer: **HTML class** (`es-m-p{XX}{side}` on the same TDs as desktop). Stripo compiles the `@media only screen and (max-width:600px)` CSS with `!important` automatically at export/preview time. **Never write manual `@media` CSS rules for structural or block padding.**
 
 ### 6.1 Scale differences (mobile vs desktop)
 
@@ -406,21 +422,29 @@ Only the tokens that differ from desktop are listed. Tokens not listed here are 
 
 ### 6.2 Structure padding (mobile overrides only)
 
-| Token path | Resolved value | vs. desktop | Override needed? |
-|---|---|---|---|
-| `spacing.structure.pad-top` | `0px` | same | NO |
-| `spacing.structure.pad-right` | `25px` | ↓ 5px | YES |
-| `spacing.structure.pad-bottom` | `30px` | ↓ 10px | YES |
-| `spacing.structure.pad-left` | `25px` | ↓ 5px | YES |
+Sync `es-m-p{XX}{side}` classes on `<td class="esd-structure">`. Sides identical to desktop need no class.
+
+| Token path | Resolved value | vs. desktop | Override needed? | Class to set |
+|---|---|---|---|---|
+| `spacing.structure.pad-top` | `0px` | same | NO | — |
+| `spacing.structure.pad-right` | `25px` | ↓ 5px | YES | `es-m-p25r` |
+| `spacing.structure.pad-bottom` | `30px` | ↓ 10px | YES | `es-m-p30b` |
+| `spacing.structure.pad-left` | `25px` | ↓ 5px | YES | `es-m-p25l` |
+
+Result (mobile classes added alongside desktop classes): `<td class="esd-structure es-p30r es-p40b es-p30l es-m-p25r es-m-p30b es-m-p25l">`
 
 ### 6.3 Container padding (mobile overrides only)
 
-| Token path | Resolved value | vs. desktop | Override needed? |
-|---|---|---|---|
-| `spacing.container.pad-top` | `0px` | same | NO |
-| `spacing.container.pad-right` | `10px` | ↓ 20px | YES |
-| `spacing.container.pad-bottom` | `10px` | same | NO |
-| `spacing.container.pad-left` | `10px` | ↓ 20px | YES |
+Sync `es-m-p{XX}{side}` classes on `<td class="esd-container-frame">`.
+
+| Token path | Resolved value | vs. desktop | Override needed? | Class to set |
+|---|---|---|---|---|
+| `spacing.container.pad-top` | `0px` | same | NO | — |
+| `spacing.container.pad-right` | `10px` | ↓ 20px | YES | `es-m-p10r` |
+| `spacing.container.pad-bottom` | `10px` | same | NO | — |
+| `spacing.container.pad-left` | `10px` | ↓ 20px | YES | `es-m-p10l` |
+
+Result: `<td class="esd-container-frame es-p30r es-p10b es-p30l es-m-p10r es-m-p10l">`
 
 ### 6.4 Block padding (mobile)
 
@@ -430,13 +454,15 @@ Only the tokens that differ from desktop are listed. Tokens not listed here are 
 
 ### 6.5 Button spacing (mobile overrides only)
 
-| Token path | Resolved value | vs. desktop | Override needed? |
-|---|---|---|---|
-| `spacing.button.pad-top` | `10px` | ↓ 5px | YES |
-| `spacing.button.pad-right` | `25px` | ↓ 5px | YES |
-| `spacing.button.pad-bottom` | `10px` | ↓ 5px | YES |
-| `spacing.button.pad-left` | `25px` | ↓ 5px | YES |
-| `spacing.button.border-radius` | `12px` | same | NO |
+Button padding remains **inline on `<a class="es-button">`** on mobile, the same as desktop. Update the `padding` value in the inline style directly — no `es-m-p` class, no manual `@media` rule.
+
+| Token path | Resolved value | vs. desktop | Override needed? | Applied as |
+|---|---|---|---|---|
+| `spacing.button.pad-top` | `10px` | ↓ 5px | YES | Update inline `style` on `<a class="es-button">` |
+| `spacing.button.pad-right` | `25px` | ↓ 5px | YES | Update inline `style` on `<a class="es-button">` |
+| `spacing.button.pad-bottom` | `10px` | ↓ 5px | YES | Update inline `style` on `<a class="es-button">` |
+| `spacing.button.pad-left` | `25px` | ↓ 5px | YES | Update inline `style` on `<a class="es-button">` |
+| `spacing.button.border-radius` | `12px` | same | NO | — |
 
 ### 6.6 List spacing (mobile)
 
@@ -487,12 +513,13 @@ Source: `Figma-local-variables/Settings/Default.tokens.json`
 | Global font-family | Default CSS | `body`, heading selectors, `ul`, `ol`, `.es-menu td a` |
 | Button base style (colours, radius, padding) | Default CSS | `a.es-button`, `.es-button-border` |
 | Button instance properties | Inline | `<a class="es-button">`, `<span class="es-button-border">` |
-| Structure padding | Inline | `<td class="esd-structure">` |
-| Container padding | Inline | `<td class="esd-container-frame">` |
-| Block padding | Inline | `<td class="esd-block-*">` |
+| Structure padding (desktop) | HTML class — JIT compiled | `es-p{XX}{side}` on `<td class="esd-structure">` |
+| Container padding (desktop) | HTML class — JIT compiled | `es-p{XX}{side}` on `<td class="esd-container-frame">` |
+| Block padding (desktop) | HTML class — JIT compiled | `es-p{XX}{side}` on `<td class="esd-block-*">` |
+| Structure / container / block padding (mobile) | HTML class — JIT compiled to `@media` | `es-m-p{XX}{side}` on the same TDs — never write manual `@media` CSS for padding |
+| Button padding (mobile) | Inline | Update `padding` value directly on `<a class="es-button">` |
 | List indent and spacing | Default CSS | `ul`, `ol`, `li` |
 | Mobile typography overrides | Custom CSS `@media` | `.es-text-{id} .es-text-mobile-size-{n}` — assign IDs after Stripo import |
-| Mobile padding overrides | Custom CSS `@media` | Scoped structure/container/button selectors with `!important` |
 | Hover / rollover effects | **Not implemented** | Omit from Default CSS output in this version. |
 
 ---
@@ -591,18 +618,31 @@ The Custom CSS panel must **never** contain:
 | Mobile heading size overrides (h1–h6 inside `@media`) | Desktop heading sizes change on mobile; Custom CSS owns this layer |
 | Mobile body copy override (`font-size: 16px !important` on `.es-content-body p, .es-content-body a`) | Body copy drops from 18px → 16px on mobile; this is the one paragraph-level `@media` override that is permitted |
 
-**The one permitted mobile paragraph override:**
+**The required mobile paragraph block (content-body reduction + cascade protection guards):**
 ```css
 @media only screen and (max-width: 600px) {
+  /* 1. Reduce body copy: 18px → 16px */
   .es-content-body p,
   .es-content-body a {
     font-size: 16px !important;
     line-height: 24px !important;
   }
-  /* .es-footer-body p and .es-infoblock p need NO mobile override —
-     their desktop and mobile sizes are identical. */
+  /* 2. Protect footer — written after, wins by source order */
+  .es-footer-body p,
+  .es-footer-body a {
+    font-size: 14px !important;
+    line-height: 19.6px !important;
+  }
+  /* 3. Protect infoblock — written last, wins over both */
+  .es-infoblock p,
+  .es-infoblock a {
+    font-size: 12px !important;
+    line-height: 16.8px !important;
+  }
 }
 ```
+
+> **Why the guards are mandatory:** `.es-footer-body` and `.es-infoblock` are nested inside `.es-content-body` in the DOM. The `!important` body rule at (0,1,1) would therefore bleed into footer and infoblock paragraphs. Adding the guard rules at the same specificity but later in source order reclaims the correct values. See §10.8 for full diagnosis.
 
 ---
 
@@ -630,31 +670,40 @@ Breaking this contract at any layer causes one or more of:
 
 ---
 
-### 10.5 — Never modify HTML classes to force a mobile style
+### 10.5 — HTML class immutability — structural classes are read-only; `es-text-mobile-size-{XX}` is the sole exception
 
-The HTML is a **read-only input** to the CSS pipeline. The AI must never:
+All `es-` and `esd-` classes in the HTML are **read-only** to the AI pipeline with one strict exception.
 
-- Change `es-text-mobile-size-36` to `es-text-mobile-size-32` to match a token change
-- Add `es-override-size` to an element that lacks it
-- Remove `es-override-size` from an element that has it
-- Add or rename `es-text-{ID}` on any `<td>`
-- Add any class to a `<p>` or heading element to influence its mobile size
+**Classes the AI must never add, rename, or remove:**
+- `esd-stripe`, `esd-structure`, `esd-container-frame`, `esd-block-*` — structural wiring
+- `es-override-size` — Stripo enrollment flag; do not add or remove it
+- `es-text-{ID}` on any `<td>` — Stripo-assigned scope anchor; never invent or change
+- Any class on a `<p>` element — font-size is resolved by the parent TD's zone class, not the `<p>` itself
 
-**If a mismatch is detected** between the Figma Mobile token value and the class name in the HTML (e.g., token says 22px but HTML has `es-text-mobile-size-24`), the AI must:
+**The one permitted HTML class change — `es-text-mobile-size-{XX}` sync:**
 
-1. Generate the `@media` CSS targeting the class name that **actually exists in the HTML** (`es-text-mobile-size-24`)
-2. Flag the discrepancy as a comment in the CSS output:
+The integer suffix `{XX}` in `es-text-mobile-size-{XX}` encodes the mobile font-size. It must be identical to the `font-size` value in the matching `@media` CSS rule. Stripo uses this class to keep the visual editor and the compiled CSS in sync. If they diverge, the template is silently broken in Stripo's UI.
+
+**Sync rule:** When applying Figma Mobile tokens, the AI **must** compare the existing `es-text-mobile-size-{XX}` class value against the token's `font-size`. If they differ, the AI must update the HTML class to match the token before generating the CSS. Both changes are made together as one atomic operation.
+
+**Example — token says 22px, HTML has the old value 24:**
+```html
+<!-- BEFORE (stale, from previous Stripo session) -->
+<h3 class="es-override-size es-text-mobile-size-24">Headline</h3>
+
+<!-- AFTER (synced to Figma Mobile token) -->
+<h3 class="es-override-size es-text-mobile-size-22">Headline</h3>
+```
 ```css
-/* ⚠ TOKEN MISMATCH: Mobile token h3 = 22px, but HTML hook is es-text-mobile-size-24.
-   CSS targets the existing HTML class. Update HTML in Stripo UI if token value is authoritative. */
-.es-text-2007 .es-text-mobile-size-24.es-override-size,
-.es-text-2007 .es-text-mobile-size-24.es-override-size * {
-  font-size: 24px !important;
-  line-height: 24px !important;
+/* CSS generated after the HTML is synced */
+.es-text-2007 .es-text-mobile-size-22.es-override-size,
+.es-text-2007 .es-text-mobile-size-22.es-override-size * {
+  font-size: 22px !important;
+  line-height: 22px !important;
 }
 ```
 
-The HTML is changed only by a human using the Stripo visual editor or code editor. Never by the AI pipeline.
+The class name suffix, the CSS selector, and the `font-size` value are always the same integer. There is no valid state where they differ.
 
 ---
 
@@ -666,10 +715,77 @@ Before writing any `@media` block for a new template, the AI must perform this r
 2. **Find the inner element** of each such TD — record which tag it is (`h1`–`h6` or `p`)
 3. **Record `es-text-mobile-size-{XX}`** from the inner element → this is the mobile size already declared in the HTML
 4. **Confirm `es-override-size` is present** on the inner element → if absent, flag the block as not enrolled (do not generate a `@media` rule for it; flag it for human review)
-5. **Match each block** to the corresponding Figma Mobile token for its element type → extract the token's line-height
-6. **Generate the `@media` rule** using the HTML class name as the selector, the HTML class name's numeric suffix as the `font-size` value, and the token's line-height as the `line-height` value
+5. **Match each block** to the corresponding Figma Mobile token for its element type → extract the token's `font-size` and `line-height`
+6. **Sync the HTML class if needed** — compare the `{XX}` suffix of `es-text-mobile-size-{XX}` against the token's `font-size`. If they differ, update the HTML class to the token value before writing any CSS.
+7. **Generate the `@media` rule** using the (now-synced) token `font-size` value as both the selector suffix and the `font-size` property. Use the token's `line-height` for the `line-height` property.
 
-This sequence guarantees the generated CSS always matches the HTML as-built, regardless of any token drift.
+This sequence guarantees the CSS selector, the HTML class, and the token value are always the same integer — which is the only valid state.
+
+---
+
+### 10.8 — Footer and infoblock cascade protection in `@media`
+
+**Root cause:** `.es-footer-body` and `.es-infoblock` are nested *inside* `.es-content-body` in the DOM. When the `@media` block reduces `.es-content-body p` to `16px !important`, that rule applies to every `<p>` inside any content stripe — including footer and infoblock paragraphs. Both rules have identical specificity (0,1,1) and both carry `!important`. CSS tie-breaking rule: **last declaration in source order wins**. Because Custom CSS loads after Default CSS, the 16px body rule silently overwrites the 14px and 12px values that Default CSS set.
+
+**Two conditions that must both be true to avoid breakage:**
+
+**Condition 1 — Clean `<p>` HTML in zone blocks.**
+`<p>` tags inside `es-infoblock` and `es-footer-body` TDs must carry **no** mobile size classes. If `es-text-mobile-size-{XX}` or `es-override-size` appear on a zone `<p>`, Stripo treats the block as enrolled in the heading-style responsive system and injects its own override — which then fights the cascade protection rules below.
+
+```html
+<!-- FORBIDDEN inside es-infoblock or es-footer-body -->
+<td class="esd-block-text es-infoblock">
+  <p class="es-text-mobile-size-16 es-override-size">Copy here.</p>
+</td>
+
+<!-- CORRECT — clean <p>, zone resolved by parent TD class -->
+<td class="esd-block-text es-infoblock">
+  <p>Copy here.</p>
+</td>
+```
+
+**Condition 2 — Cascade protection rules, in the correct source order.**
+The `@media` block must always contain these three rules in this exact order. Do not reorder them. Do not omit the footer or infoblock guards.
+
+```css
+@media only screen and (max-width: 600px) {
+
+  /* 1. Body copy reduction — triggers the cascade problem */
+  .es-content-body p,
+  .es-content-body a {
+    font-size: 16px !important;
+    line-height: 24px !important;
+  }
+
+  /* 2. Footer guard — written after body rule; reclaims 14px by source order */
+  .es-footer-body p,
+  .es-footer-body a {
+    font-size: 14px !important;
+    line-height: 19.6px !important;
+  }
+
+  /* 3. Infoblock guard — written last; wins over both rules above */
+  .es-infoblock p,
+  .es-infoblock a {
+    font-size: 12px !important;
+    line-height: 16.8px !important;
+  }
+
+}
+```
+
+**Why these values:** `type.Footer` is 14px/19.6px and `type.Info-area` is 12px/16.8px on both desktop and mobile (no token delta). The guards are not size-change rules — they are shield rules that re-assert the Default CSS values inside the Custom CSS `@media` block to prevent source-order bleed from the content-body reduction.
+
+**Cascade diagram:**
+```
+Default CSS (loaded first)
+  .es-infoblock p { font-size: 12px }         ← set by Default CSS
+
+Custom CSS @media (loaded after — later source order)
+  .es-content-body p { font-size: 16px !important }  ← overwrites infoblock ← BAD without guard
+  .es-footer-body p  { font-size: 14px !important }  ← reclaims footer
+  .es-infoblock p    { font-size: 12px !important }  ← reclaims infoblock ← CORRECT
+```
 
 ---
 
@@ -680,7 +796,10 @@ Before finalising any HTML or CSS output, verify:
 **HTML hygiene:**
 - [ ] All `<p>` tags inside `esd-block-text` TDs are attribute-free (no `style`, no font-size class)
 - [ ] `es-infoblock`, `es-footer-body`, `es-content-body` classes are on the correct **TD or table**, not on the `<p>`
-- [ ] No HTML class has been added, renamed, or removed by the AI
+- [ ] `<p>` tags inside `es-infoblock` and `es-footer-body` TDs carry **no** `es-text-mobile-size-{XX}` or `es-override-size` classes — these zones resolve their size via the parent TD, not via heading-style enrollment
+- [ ] No structural `es-`/`esd-` class has been added, renamed, or removed by the AI — the only permitted HTML class changes are syncing `es-text-mobile-size-{XX}` (typography) and `es-p{XX}{side}` / `es-m-p{XX}{side}` (padding) to match Figma tokens
+- [ ] No inline `style="padding:..."` has been added to `esd-structure`, `esd-container-frame`, or `esd-block-*` TDs — padding is applied exclusively via `es-p{XX}{side}` class sync
+- [ ] Mobile padding TDs carry `es-m-p{XX}{side}` classes for all sides whose mobile token value differs from desktop — no manual `@media` padding CSS has been written
 
 **Custom CSS hygiene:**
 - [ ] Custom CSS contains zero redeclarations of `.es-content-body p`, `.es-footer-body p`, or `.es-infoblock p` font-size outside of the permitted mobile `@media` block
@@ -691,6 +810,8 @@ Before finalising any HTML or CSS output, verify:
 - [ ] Every `@media` rule uses the **two-class compound selector**: `.es-text-{ID} .es-text-mobile-size-{XX}.es-override-size`
 - [ ] The `*` descendant selector is appended on the second line of each rule
 - [ ] `!important` is present on both `font-size` and `line-height`
-- [ ] `{XX}` in the selector matches the integer suffix of the class actually present in the HTML — not the raw token value if they differ
-- [ ] `type.Footer`, `type.Info-area`, and `type.button` produce **no** `@media` rules (desktop = mobile for all three)
-- [ ] Any token-vs-HTML mismatch is flagged as a CSS comment, not silently corrected in the HTML
+- [ ] `es-text-mobile-size-{XX}` classes in the HTML have been synced to the Figma Mobile token `font-size` values before CSS was written
+- [ ] `{XX}` in every `@media` selector is identical to the `font-size` value on the same rule — they are always the same integer
+- [ ] `type.button` produces no `@media` rule (desktop = mobile, applied inline)
+- [ ] The `@media` block contains the three paragraph rules in this exact order: `.es-content-body p` → `.es-footer-body p` → `.es-infoblock p` (source order is the cascade mechanism — reordering breaks protection)
+- [ ] No token-vs-HTML size mismatch remains in the output — mismatches are resolved by updating the HTML class, not by leaving them flagged

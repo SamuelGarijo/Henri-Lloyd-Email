@@ -1,0 +1,224 @@
+/* ============================================================
+   Henri Lloyd — Custom CSS (Figma Typography)
+   Source: Typography Tokens - New / Desktop.tokens.json
+           Typography Tokens - New / Mobile.tokens.json
+   Active modes: Dark Base · Desktop (primary) · Mobile (override)
+
+   Paste into Stripo's Custom CSS panel.
+   Default Styles = ON. Rules here override the Stripo-generated
+   Default CSS via normal cascade/specificity.
+
+   Body, footer and info-area paragraph rules are owned by
+   Default CSS (Stripo General Styles). They are NOT repeated here.
+   ============================================================ */
+
+
+/* ─────────────────────────────────────────────────────────────
+   STRUCTURAL — non-typography rules retained from original-custom.css
+   ───────────────────────────────────────────────────────────── */
+
+.es-button img {
+  padding-bottom: 2px;
+}
+
+.es-button-border a {
+  text-transform: uppercase;
+}
+
+.esd-module-6611 .es-button img {
+  padding-bottom: 2px;
+}
+
+.esd-module-6611 .es-button-border a {
+  text-transform: uppercase;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   DESKTOP TYPOGRAPHY — h1–h6
+   Source:  Typography Tokens - New / Desktop.tokens.json
+   Layer:   Custom CSS (overrides Stripo Default CSS heading defaults)
+   Omitted: font-family for h1–h5 (DM Sans set by Default CSS via
+            General Styles). font-family included for h6 only
+            (PT Mono is not in the DM Sans web-font link).
+   Omitted: margin-bottom — spacing token, not typography; added
+            separately when Spacing tokens are applied.
+   ───────────────────────────────────────────────────────────── */
+
+/* h1 — Regular 400 | 48px / 48px lh | letter-spacing 0
+   token: type.headings.h1 | line-height alias resolves to font-size */
+h1 {
+  font-size: 48px;
+  line-height: 48px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* h2 — Semibold 600 | 32px / 32px lh | letter-spacing 0
+   token: type.headings.h2 */
+h2 {
+  font-size: 32px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-align: inherit;
+}
+
+/* h3 — Semibold 600 | 24px / 24px lh | letter-spacing 0
+   token: type.headings.h3 */
+h3 {
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-align: inherit;
+}
+
+/* h4 — Semibold 600 | 20px / 20px lh | letter-spacing 0
+   token: type.headings.h4 */
+h4 {
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-align: inherit;
+}
+
+/* h5 — Bold 700 | 15px / 18px lh | letter-spacing 0
+   token: type.headings.h5 | line-height is explicit (not an alias) */
+h5 {
+  font-size: 15px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: inherit;
+}
+
+/* h6 — Regular 400 | 12px / 12px lh | PT Mono
+   token: type.headings.h6
+   font-family declared here because PT Mono is not part of the
+   Shopify/CDN DM Sans web-font link. Add a separate <link> or
+   @font-face for PT Mono in the <head> of any template using h6. */
+h6 {
+  font-family: 'PT Mono', monospace;
+  font-size: 12px;
+  line-height: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-align: inherit;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   MOBILE TYPOGRAPHY — @media overrides
+   Source:  Typography Tokens - New / Mobile.tokens.json
+   Layer:   Custom CSS @media block
+   All rules require !important to beat desktop inline styles.
+   Block IDs (es-text-XXXX) read from figma-like.html.
+
+   type.Footer, type.Info-area, type.button are identical across
+   Desktop and Mobile — they produce zero @media output.
+   ───────────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 600px) {
+
+  /* h1: 48px → 36px | line-height 36px (alias resolves to font-size)
+     token: type.headings.h1 (Mobile) | block ID: es-text-1766 */
+  .es-text-1766 .es-text-mobile-size-36.es-override-size,
+  .es-text-1766 .es-text-mobile-size-36.es-override-size * {
+    font-size: 36px !important;
+    line-height: 36px !important;
+  }
+
+  /* h2: 32px → 28px | line-height 28px (alias resolves to font-size)
+     token: type.headings.h2 (Mobile) | block ID: es-text-1355 */
+  .es-text-1355 .es-text-mobile-size-28.es-override-size,
+  .es-text-1355 .es-text-mobile-size-28.es-override-size * {
+    font-size: 28px !important;
+    line-height: 28px !important;
+  }
+
+  /* h3: 24px → 22px | line-height 22px (alias resolves to font-size)
+     token: type.headings.h3 (Mobile) | block ID: es-text-2007 */
+  .es-text-2007 .es-text-mobile-size-22.es-override-size,
+  .es-text-2007 .es-text-mobile-size-22.es-override-size * {
+    font-size: 22px !important;
+    line-height: 22px !important;
+  }
+
+  /* h4: 20px → 18px | line-height 18px (alias resolves to font-size)
+     token: type.headings.h4 (Mobile) | block ID: es-text-2609 */
+  .es-text-2609 .es-text-mobile-size-18.es-override-size,
+  .es-text-2609 .es-text-mobile-size-18.es-override-size * {
+    font-size: 18px !important;
+    line-height: 18px !important;
+  }
+
+  /* h5: 15px → 14px | line-height 16.8px (explicit value in token)
+     token: type.headings.h5 (Mobile) | block ID: es-text-2513 */
+  .es-text-2513 .es-text-mobile-size-14.es-override-size,
+  .es-text-2513 .es-text-mobile-size-14.es-override-size * {
+    font-size: 14px !important;
+    line-height: 16.8px !important;
+  }
+
+  /* h6: 12px → 10px | line-height 10px (alias resolves to font-size)
+     token: type.headings.h6 (Mobile) | block ID: es-text-8291 */
+  .es-text-8291 .es-text-mobile-size-10.es-override-size,
+  .es-text-8291 .es-text-mobile-size-10.es-override-size * {
+    font-size: 10px !important;
+    line-height: 10px !important;
+  }
+
+  /* body copy: 18px → 16px | line-height 24px
+     token: type.body (Mobile)
+     Zone-wide selector — no block ID required.
+     Covers all <p> and <a> inside content stripes.
+     type.Footer (14px) and type.Info-area (12px) are identical on
+     mobile — no override needed for those zones. */
+  .es-content-body p,
+  .es-content-body a {
+    font-size: 16px !important;
+    line-height: 24px !important;
+  }
+
+  /* ── Structural mobile rules — retained from original-custom.css ── */
+
+  .es-module-5980 .esd-stripe .mobile-footer-border {
+    border-right: 0px !important;
+  }
+
+  .es-module-5980 .mobile-footer-border {
+    border-right: 0px !important;
+  }
+
+  a.es-button.es-button-9856 {
+    padding: 0 !important;
+  }
+
+  a.es-button.es-button-5051 {
+    padding: 0 !important;
+  }
+
+  a.es-button.es-button-1467 {
+    padding: 0 !important;
+  }
+
+  .esd-module-6611 a.es-button.es-button-3394 {
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .esd-module-6611 .es-m-w0 {
+    width: 0px !important;
+  }
+
+  .esd-module-6611 td.es-spacer-1139 {
+    height: 100px !important;
+  }
+
+  .esd-module-6611 td.es-spacer-1318 {
+    height: 185px !important;
+  }
+
+}

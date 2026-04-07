@@ -43,27 +43,62 @@ For the Henri Lloyd pipeline, only `esd-block-text`, `esd-block-image`, `esd-blo
 
 ---
 
-## 3. The `es-p{n}{side}` spacing utility system
+## 3. The `es-p{n}{side}` spacing utility system — Stripo JIT compiler
 
-Stripo auto-generates utility classes for padding based on values set in the editor. These classes must not be written manually or invented.
+Stripo uses a **Just-In-Time (JIT) compiler** for padding. Padding values are stored as utility classes directly in the HTML. At export or preview time, Stripo scans the HTML, collects every `es-p{XX}{side}` and `es-m-p{XX}{side}` class present, and injects the corresponding CSS rules into the `<head>` of the compiled email. **These classes never appear in the Default CSS or Custom CSS panels** — they live exclusively in the HTML and are resolved at compile time. This is why padding values are not visible in `defaul.css` or `custom.css`.
 
-**Pattern:** `es-p` + value in px + side abbreviation
+### Class anatomy
 
-| Suffix | Meaning |
-|---|---|
-| *(none)* | padding on all four sides |
-| `t` | padding-top |
-| `b` | padding-bottom |
-| `l` | padding-left |
-| `r` | padding-right |
+| Pattern | Scope | Compiled output |
+|---|---|---|
+| `es-p{XX}{side}` | Desktop | `padding-{side}: {XX}px` |
+| `es-m-p{XX}{side}` | Mobile | `padding-{side}: {XX}px !important` inside `@media only screen and (max-width:600px)` — generated automatically |
 
-Examples: `es-p30b` = padding-bottom 30px / `es-p20t` = padding-top 20px / `es-p10` = padding 10px all sides.
+**Side suffixes:** `t` = top · `r` = right · `b` = bottom · `l` = left · *(no suffix)* = all four sides
 
-**Scope matters:** these utility classes appear on `esd-structure` (row-level padding), on `esd-container-frame` (column-level padding), and on `esd-block-*` elements (block-level padding). Applying padding at the wrong scope breaks the UI controls. Always inspect the reference HTML to confirm where a given `es-p` class sits before replicating it.
+**Examples:** `es-p30b` → `padding-bottom: 30px` · `es-p25l` → `padding-left: 25px` · `es-m-p40b` → mobile `padding-bottom: 40px !important`
 
-**Tokens from Figma are applied as inline styles, not as `es-p` classes.** The `es-p` classes are Stripo's internal UI representation. They are read-only as far as this pipeline is concerned. The catalogue of valid `es-p` classes is determined per-template by inspecting the editable HTML — Claude Code must treat any `es-p` class already present in the reference file as valid, and must not invent new values not found there.
+### Pipeline rule — class sync, not inline styles
 
-**Mobile variant:** `es-m-p{n}` and `es-m-p{n}{side}`, always inside a `@media` block, always with `!important`. Same rule applies: do not invent values.
+When applying Figma Spacing tokens, Claude Code must **rename the existing `es-p{XX}{side}` class** on the target TD to match the token value. This is the same atomic sync pattern used for `es-text-mobile-size-{XX}`.
+
+**FORBIDDEN — inline padding on structure / container / block TDs:**
+```html
+<!-- Locks the Stripo UI padding controls. Breaks the JIT pipeline. Never do this. -->
+<td class="esd-structure" style="padding: 0 30px 40px 30px">
+```
+
+**CORRECT — rename the class integer to match the Figma token:**
+```html
+<!-- Stripo JIT generates the CSS at compile time. UI controls remain fully live. -->
+<td class="esd-structure es-p30r es-p40b es-p30l">
+```
+
+**Sync procedure:**
+1. Read the existing `es-p{XX}{side}` class on the target TD
+2. Compare `{XX}` against the Figma Desktop Spacing token resolved px value
+3. If they differ → rename the class to `es-p{TOKEN_VALUE}{side}`
+4. For mobile → apply the same check to `es-m-p{XX}{side}` classes using Mobile token values; the `@media` CSS is compiled automatically — **never write mobile padding `@media` rules manually**
+5. If a side's token value is `0px` and no class for that side exists → leave it absent (zero is the default, no class needed)
+6. If a side has a non-zero token value but no existing class → add the correct `es-p{XX}{side}` class at the correct scope (confirmed by inspecting the reference HTML)
+
+### Scope — where each class lives
+
+Applying a class at the wrong scope produces unexpected spacing and confuses the Stripo UI controls.
+
+| Class | Lives on | Controls |
+|---|---|---|
+| `es-p{XX}{side}` / `es-m-p{XX}{side}` | `<td class="esd-structure">` | Row-level padding |
+| `es-p{XX}{side}` / `es-m-p{XX}{side}` | `<td class="esd-container-frame">` | Column-level padding |
+| `es-p{XX}{side}` / `es-m-p{XX}{side}` | `<td class="esd-block-*">` | Block-level padding |
+
+### Button padding — the one inline exception
+
+Button padding is applied as an **inline style on `<a class="es-button">`** only. Buttons do not use the `es-p{XX}{side}` JIT system. This is the only structural padding that remains inline. Mobile button padding overrides are also inline on the same element — no `es-m-p` class or manual `@media` rule required.
+
+```html
+<a class="es-button" style="padding: 15px 30px; ...">Label</a>
+```
 
 ---
 
@@ -155,11 +190,12 @@ Line-height must always be expressed in **absolute px**, calculated as font-size
 ## 8. What Claude Code must never do
 
 - Invent `esd-*` class names not present in the reference HTML
-- Invent `es-p{n}{side}` or `es-m-p{n}{side}` values not present in the reference HTML
+- Apply `style="padding:..."` inline on `esd-structure`, `esd-container-frame`, or `esd-block-*` TDs — use `es-p{XX}{side}` class sync instead (§3)
+- Write `@media` CSS rules for structural padding — mobile padding is handled by `es-m-p{XX}{side}` classes; Stripo compiles the `@media` CSS automatically (§3)
 - Generate VML button markup — Stripo injects this at compile time
 - Apply `font-family` or global `body` font-size as inline styles
 - Remove Outlook conditional comments (`<!--[if mso]>`, `<!--[if !mso]><!-- -->`)
 - Use percentage or unitless values for `line-height`
 - Generate block-specific `es-text-{id}` mobile override classes — these are Stripo-assigned
-- Write `!important` outside of `@media` mobile override blocks
+- Write `!important` outside of `@media` mobile typography override blocks
 - Overwrite any file inside `Stripo-code-examples/` — that folder is reference only
